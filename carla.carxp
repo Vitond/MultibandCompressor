@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE CARLA-PROJECT>
+<CARLA-PROJECT VERSION='2.5'>
+ <EngineSettings>
+  <ForceStereo>false</ForceStereo>
+  <PreferPluginBridges>false</PreferPluginBridges>
+  <PreferUiBridges>true</PreferUiBridges>
+  <UIsAlwaysOnTop>false</UIsAlwaysOnTop>
+  <MaxParameters>200</MaxParameters>
+  <UIBridgesTimeout>4000</UIBridgesTimeout>
+ </EngineSettings>
+
+ <Transport>
+  <BeatsPerMinute>120</BeatsPerMinute>
+ </Transport>
+
+ <!-- Multiband Compressor -->
+ <Plugin>
+  <Info>
+   <Type>VST3</Type>
+   <Name>Multiband Compressor</Name>
+   <Binary>/home/ove/.vst3/Multiband Compressor.vst3</Binary>
+   <Label>Multiband Compressor</Label>
+  </Info>
+
+  <Data>
+   <Active>Yes</Active>
+   <Volume>0.0475</Volume>
+   <ControlChannel>1</ControlChannel>
+   <Options>0x9</Options>
+
+   <Chunk>
+VkMyIZ4BAAA8P3htbCB2ZXJzaW9uPSIxLjAiIGVuY29kaW5nPSJVVEYtOCI/PiA8VlNUM1BsdWdpblN0YXRlPjxJQ29tcG9uZW50PjIzMy5QRWxiZzBWWXpV
+bGJ5QS4uQVAuVEFJVVBNQVAuQmpGWS5ELkJFRERjekUxWHFBZmNnd1Zja0FQLklQLi4uLi4uLi4uRS5BLlRBSVVQTUFQLkJqRlkuRHZBRUhVWHprMWEuWFdY
+clVXWS5EUEJELi4uLi4uLi5uQlAuLlVQUkVUUy5EZi5vUUYuQWpQQVJVRmFrRTFia0FmY2d3VmNrQVAuSVAuLi4uLi4uLi5FLkEuVEFJVVBNQVAuQmpGWS5E
+dkJFUEVaeFUxYm44RmFqQWZjZ3dWY2tBUC5JUC4uLi4uLi4uZk0uQy4uLi4uLi4uLi4ublRVQ1VEVHhrbGNnUVdZREVGY2dBUC5BSFRkdkUxYnlBUC5BTC4u
+Yy4uLi4uLi4uLmZSVU1UUVBJV1oxRUZja1FUWHpFRjwvSUNvbXBvbmVudD48L1ZTVDNQbHVnaW5TdGF0ZT4A
+   </Chunk>
+  </Data>
+ </Plugin>
+
+ <!-- AudioFilePlayer -->
+ <Plugin>
+  <Info>
+   <Type>VST3</Type>
+   <Name>AudioFilePlayer</Name>
+   <Binary>/home/ove/.vst3/AudioFilePlayer.vst3</Binary>
+   <Label>AudioFilePlayer</Label>
+  </Info>
+
+  <Data>
+   <Active>Yes</Active>
+   <Volume>1.27</Volume>
+   <ControlChannel>1</ControlChannel>
+   <Options>0x9</Options>
+
+   <Chunk>
+VkMyIScBAAA8P3htbCB2ZXJzaW9uPSIxLjAiIGVuY29kaW5nPSJVVEYtOCI/PiA8VlNUM1BsdWdpblN0YXRlPjxJQ29tcG9uZW50PjE0NC5QSTJhdlVsYnpr
+Vll5QVAuQUxUY3hJV1l0UW1Rb3dWWS5ELk5FN0JadTBWWXU3bGNrOEJRdWNtYXI4VlhqTTJLQXcxYXRBUlN1SUdIZkxVWTNBeFVuRUZha01HSHMuaFJnTVdh
+bzRWWXRiV1gxQS4uLi4uLi4uLi4uLmZSVU1UUVBJV1oxRUZja1FUWHpFRi5BRGZQNEFXWHlNRy5BRHYuLnpBLi4uLi4uLi4uSlUwUEVBa2JvWVdYelVGUWdR
+V1g8L0lDb21wb25lbnQ+PC9WU1QzUGx1Z2luU3RhdGU+AA==
+   </Chunk>
+  </Data>
+ </Plugin>
+
+ <ExternalPatchbay>
+  <Connection>
+   <Source>system:capture_1</Source>
+   <Target>PulseAudio JACK Source:front-left</Target>
+  </Connection>
+  <Connection>
+   <Source>system:capture_2</Source>
+   <Target>PulseAudio JACK Source:front-right</Target>
+  </Connection>
+  <Connection>
+   <Source>PulseAudio JACK Sink:front-left</Source>
+   <Target>system:playback_1</Target>
+  </Connection>
+  <Connection>
+   <Source>PulseAudio JACK Sink:front-right</Source>
+   <Target>system:playback_2</Target>
+  </Connection>
+  <Connection>
+   <Source>Multiband Compressor:output_1</Source>
+   <Target>system:playback_1</Target>
+  </Connection>
+  <Connection>
+   <Source>Multiband Compressor:output_2</Source>
+   <Target>system:playback_2</Target>
+  </Connection>
+  <Connection>
+   <Source>AudioFilePlayer:output_1</Source>
+   <Target>Multiband Compressor:input_1</Target>
+  </Connection>
+  <Connection>
+   <Source>AudioFilePlayer:output_2</Source>
+   <Target>Multiband Compressor:input_2</Target>
+  </Connection>
+ </ExternalPatchbay>
+</CARLA-PROJECT>
