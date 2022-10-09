@@ -183,7 +183,7 @@ void MultibandCompressorAudioProcessor::processBlock (juce::AudioBuffer<float>& 
     auto context = juce::dsp::ProcessContextReplacing<float>(block);
 
     compressor.process(context);
-    gain.process(context);
+    // gain.process(context);
 }
 
 //==============================================================================
