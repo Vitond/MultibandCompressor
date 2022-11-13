@@ -44,8 +44,8 @@ namespace Params {
           "Low-Mid Crossover Freq"
         },
         {
-          Low_Mid_Crossover_Freq,
-          "Low-Mid Crossover Freq"
+          Mid_High_Crossover_Freq,
+          "Mid-High Crossover Freq"
         },
         { 
           Threshold_Low_Band,
@@ -198,13 +198,17 @@ public:
 private:
     CompressorBand compressor;
     using Filter = juce::dsp::LinkwitzRileyFilter<float>;
-    Filter LP, HP;
+    //      fc0   fc2
+    Filter  LP1,  AP2,
+            HP1,  LP2,
+                  HP2;
 
-    Filter AP;
-    juce::AudioBuffer<float> apBuffer;
+    // Filter AP;
+    // juce::AudioBuffer<float> apBuffer;
 
-    juce::AudioParameterFloat* lowCrossOver { nullptr };
-    std::array<juce::AudioBuffer<float>, 2> filterBuffers;
+    juce::AudioParameterFloat* lowMidCrossOver { nullptr };
+    juce::AudioParameterFloat* midHighCrossOver { nullptr };
+    std::array<juce::AudioBuffer<float>, 3> filterBuffers;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MultibandCompressorAudioProcessor)
