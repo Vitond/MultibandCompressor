@@ -10,6 +10,140 @@
 
 #include <JuceHeader.h>
 
+namespace Params {
+  enum Names {
+    Low_Mid_Crossover_Freq,
+    Mid_High_Crossover_Freq,
+
+    Threshold_Low_Band,
+    Threshold_Mid_Band,
+    Threshold_High_Band,
+
+    Attack_Low_Band,
+    Attack_Mid_Band,
+    Attack_High_Band,
+
+    Release_Low_Band,
+    Release_Mid_Band,
+    Release_High_Band,
+
+    Ratio_Low_Band,
+    Ratio_Mid_Band,
+    Ratio_High_Band,
+
+    Bypassed_Low_Band,
+    Bypassed_Mid_Band,
+    Bypassed_High_Band
+  };
+
+  inline const std::map<Names, juce::String>& GetParams()
+  {
+      static std::map<Names, juce::String> params = {
+        {
+          Low_Mid_Crossover_Freq,
+          "Low-Mid Crossover Freq"
+        },
+        {
+          Low_Mid_Crossover_Freq,
+          "Low-Mid Crossover Freq"
+        },
+        { 
+          Threshold_Low_Band,
+          "Threshold Low Band"
+        },
+        { 
+          Threshold_Mid_Band,
+          "Threshold Mid Band"
+        },
+        {
+          Threshold_High_Band,
+          "Threshold High Band",
+        },
+        {
+          Attack_Low_Band,
+          "Attack Low Band"
+        },
+        {
+          Attack_Mid_Band,
+          "Attack Mid Band",
+        },
+        {
+          Attack_High_Band,
+          "Attack High band",
+        },
+        {
+          Release_Low_Band,
+          "Release Low Band",
+        },
+        {
+          Release_Mid_Band,
+          "Release Mid Band",
+        },
+        {
+          Release_High_Band,
+          "Release High Band",
+        },
+        {
+          Ratio_Low_Band,
+          "Ratio Low Band",
+        },
+        {
+          Ratio_Mid_Band,
+          "Ratio Mid Band",
+        },
+        {
+          Ratio_High_Band,
+          "Ratio High Band",
+        },
+        {
+          Bypassed_Low_Band,
+          "Bypassed Low Band",
+        },
+        {
+          Bypassed_Mid_Band,
+          "Bypassed Mid Band",
+        },
+        {
+          Bypassed_High_Band,
+          "Bypassed High Band"
+        }        
+      };
+
+      return params;
+  }
+}
+
+struct CompressorBand
+{
+  public:
+    juce::AudioParameterFloat* attack { nullptr};
+    juce::AudioParameterFloat* release { nullptr };
+    juce::AudioParameterFloat* threshold { nullptr };
+    juce::AudioParameterChoice* ratio { nullptr };
+    juce::AudioParameterBool* bypass { nullptr};
+
+    void prepare(const juce::dsp::ProcessSpec& spec) {
+        compressor.prepare(spec);
+    }
+    void updateCompressorSettings()
+    {
+      compressor.setAttack(attack->get());
+      compressor.setRatio(ratio->getCurrentChoiceName().getFloatValue());
+      compressor.setRelease(release->get());
+      compressor.setThreshold(threshold->get());
+    }
+    void process(juce::AudioBuffer<float>& buffer) {
+      auto block = juce::dsp::AudioBlock<float>(buffer);
+      auto context = juce::dsp::ProcessContextReplacing<float>(block);
+
+      if (!bypass) {
+        compressor.process(context);
+      }
+    }
+  private:
+    juce::dsp::Compressor<float> compressor;
+};  
+
 //==============================================================================
 /**
 */
@@ -62,13 +196,16 @@ public:
     APVTS apvts {*this, nullptr, "Parameters", createParameterLayout()};
 
 private:
-    juce::dsp::Compressor<float> compressor;
-    juce::dsp::Gain<float> gain;
+    CompressorBand compressor;
+    using Filter = juce::dsp::LinkwitzRileyFilter<float>;
+    Filter LP, HP;
 
-    juce::AudioParameterFloat* attack { nullptr};
-    juce::AudioParameterFloat* release { nullptr };
-    juce::AudioParameterFloat* threshold { nullptr };
-    juce::AudioParameterChoice* ratio { nullptr };
+    Filter AP;
+    juce::AudioBuffer<float> apBuffer;
+
+    juce::AudioParameterFloat* lowCrossOver { nullptr };
+    std::array<juce::AudioBuffer<float>, 2> filterBuffers;
+
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MultibandCompressorAudioProcessor)
 };
