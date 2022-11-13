@@ -131,12 +131,13 @@ struct CompressorBand
       compressor.setRatio(ratio->getCurrentChoiceName().getFloatValue());
       compressor.setRelease(release->get());
       compressor.setThreshold(threshold->get());
+
     }
     void process(juce::AudioBuffer<float>& buffer) {
       auto block = juce::dsp::AudioBlock<float>(buffer);
       auto context = juce::dsp::ProcessContextReplacing<float>(block);
 
-      if (!bypass) {
+      if (!bypass->get()) {
         compressor.process(context);
       }
     }
@@ -196,7 +197,11 @@ public:
     APVTS apvts {*this, nullptr, "Parameters", createParameterLayout()};
 
 private:
-    CompressorBand compressor;
+    std::array<CompressorBand, 3> compressors;
+    CompressorBand& lowBandComp = compressors[0];
+    CompressorBand& midBandComp = compressors[1];
+    CompressorBand& highBandComp = compressors[2];
+
     using Filter = juce::dsp::LinkwitzRileyFilter<float>;
     //      fc0   fc2
     Filter  LP1,  AP2,
