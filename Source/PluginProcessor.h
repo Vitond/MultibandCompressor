@@ -203,9 +203,6 @@ private:
             HP1,  LP2,
                   HP2;
 
-    // Filter AP;
-    // juce::AudioBuffer<float> apBuffer;
-
     juce::AudioParameterFloat* lowMidCrossOver { nullptr };
     juce::AudioParameterFloat* midHighCrossOver { nullptr };
     std::array<juce::AudioBuffer<float>, 3> filterBuffers;

@@ -143,7 +143,7 @@ void MultibandCompressorAudioProcessor::prepareToPlay (double sampleRate, int sa
     LP2.prepare(spec);
     HP2.prepare(spec);
     AP2.prepare(spec);
-    // apBuffer.setSize(spec.numChannels, samplesPerBlock);
+
     for (auto& buffer : filterBuffers)
     {
         buffer.setSize(spec.numChannels, samplesPerBlock);
@@ -213,6 +213,7 @@ void MultibandCompressorAudioProcessor::processBlock (juce::AudioBuffer<float>& 
     for (auto& fb: filterBuffers) {
         fb = buffer;
     }
+
     auto lowMidCutoff = lowMidCrossOver->get();
     auto midHighCutoff = midHighCrossOver->get();
     LP1.setCutoffFrequency(lowMidCutoff);
@@ -241,15 +242,6 @@ void MultibandCompressorAudioProcessor::processBlock (juce::AudioBuffer<float>& 
     auto numSamples = buffer.getNumSamples();
     auto numChannels = buffer.getNumChannels();
 
-    if (compressor.bypass->get()) {
-        return;
-    }
-
-    // apBuffer = buffer;
-    // auto apBlock = juce::dsp::AudioBlock<float>(apBuffer);
-    // auto apContext = juce::dsp::ProcessContextReplacing<float>(apBlock);
-    // AP.process(apContext);
-
     buffer.clear();
 
     auto addFilterBand = [nc = numChannels, ns = numSamples](auto& inputBuffer, const auto& source)
@@ -258,28 +250,10 @@ void MultibandCompressorAudioProcessor::processBlock (juce::AudioBuffer<float>& 
             inputBuffer.addFrom(i, 0, source, i, 0, ns);
         };
     };
-    
-    // if (compressor.bypass->get()) {
-    //     // addFilterBand(buffer, apBuffer);
-    // } 
-    // else {
-    //     addFilterBand(buffer, filterBuffers[0]);
-    //     // addFilterBand(buffer, filterBuffers[1]);
-    // }
 
     addFilterBand(buffer, filterBuffers[0]);
     addFilterBand(buffer, filterBuffers[1]);
     addFilterBand(buffer, filterBuffers[2]);
-    // if (compressor.bypass->get()) {
-    //     for (auto ch = 0; ch < numChannels ; ++ch) {
-    //         juce::FloatVectorOperations::multiply(apBuffer.getWritePointer(ch), -1.f, numSamples);
-    //     }
-    //     addFilterBand(buffer, apBuffer);
-    // }
-
-    // compressor.updateCompressorSettings();
-//    compressor.process(buffer);
-    // gain.process(context);
 }
 
 //==============================================================================
